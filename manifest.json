@@ -6,11 +6,12 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
       "20": "/images/icon20.png"
     }
-  }
+  },
+  "options_page": "options.html"
 }
