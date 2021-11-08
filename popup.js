@@ -21,3 +21,12 @@ function setSampleFunction() {
 
     });
 }
+
+
+
+//Function to consume Spotify API to play music
+function playRandom(){
+    $.ajax("https://api.spotify.com",[
+        data:"party"
+        ])
+}
