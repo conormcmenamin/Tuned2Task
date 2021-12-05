@@ -1,4 +1,6 @@
 import { getAccessToken, Token, songTracker} from "./spotify-interface";
+import {getCurrentTrack} from './cache';
+import {CACHE_KEY} from './constants';
 
 type divType= 'please-login-box'|'spotify-player-box';
 export type RepeatMode = 'track' | 'context' | 'off';
@@ -14,7 +16,7 @@ export class App{
 
     public async render(){
         this.token=await getAccessToken();
-        console.log(this.isLoggedIn());
+        
         if (!this.isLoggedIn()){
             showUI('please-login-box');
             return;
@@ -24,6 +26,20 @@ export class App{
     }
     private async showPlayerUI(){
         showUI('spotify-player-box');
+        
+        const storedTrack=Cache.getCurrentTrack(CACHE_KEY);
+        this.track=await this.getTrack(storedTrack);
+
+        if(){
+
+        }else{
+            if(!this.track){
+
+            }else {
+
+            }
+        }
+
 
     }
     private isLoggedIn(){
