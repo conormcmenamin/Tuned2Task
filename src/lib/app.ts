@@ -1,4 +1,7 @@
-import { getAccessToken, Token, songTracker} from "./spotify-interface";
+import { STORAGE_KEY } from "./constants";
+import {Cache} from './cache';
+import {parse, getAccessToken, PlayerState,Token,getRecentlyPlayedTrack, getRecentPlayback, songTracker, isUpdateStorage} from "./spotify-interface";
+
 
 type divType= 'please-login-box'|'spotify-player-box';
 export type RepeatMode = 'track' | 'context' | 'off';
@@ -24,12 +27,149 @@ export class App{
     }
     private async showPlayerUI(){
         showUI('spotify-player-box');
+        const storedTrack=Cache.retrieve(STORAGE_KEY);
+        this.track= await this.getTrack(storedTrack);
+        console.log('track:' +this.track);
 
+        if(isUpdateStorage(storedTrack,this.track)){
+            Cache.storeWithKey(STORAGE_KEY, this.track);
+        }else{
+            if(!this.track){
+                this.track = { ...storedTrack, isPlaying: false };
+            }else{
+                this.track=storedTrack;
+            }
+        }
+
+        this.displayTrackInfo();
+        this.startTimer();
+        displayControlItems('play');
     }
     private isLoggedIn(){
         return !this.token.isAnonymous;
     }
+    private async getTrack(storedTrack:songTracker){
+        let track=await getRecentPlayback(this.token.accessToken);
+        let type: PlayerState;
+
+        if(track){
+            if(!track.item){
+                type='no-song-playing';
+            }
+        }else{
+            if(storedTrack){
+                type='cache';
+            }else{
+                type='nothing'
+            }
+        }
+
+        switch (type) {
+            case 'nothing':
+            case 'no-song-playing':
+              track = await getRecentlyPlayedTrack(this.token.accessToken);
+              break;
+            case 'cache':
+              track = storedTrack;
+              break;
+          }
+          track = parse(track);
+
+          return track;
+    
+    }
+
+    private async displayTrackInfo() {
+        const playback=this.track;
+        const songTitle = document.getElementById('title');
+        const artistName = document.getElementById('artist');
+        const coverImage = document.getElementById('cover-photo-wrapper');
+        // const infoBox = document.getElementById('information-box');
+        // const prevIcon = document.getElementById('prev-icon');
+        // const playIcon = document.getElementById('play-icon');
+        // const pauseIcon = document.getElementById('pause-icon');
+        // const nextIcon = document.getElementById('next-icon');
+        // const repeatIcon = document.getElementById('repeat-icon');
+        // const repeatContext = document.getElementById('repeat-context');
+        // const repeatOne = document.getElementById('repeat-one');
+        // const divider = document.getElementById('divider');
+      
+        const { title, artist, coverPhoto, trackUrl } = playback;
+        console.log('song title: '+title);
+      
+        if (title) {
+          songTitle.textContent = title;
+          songTitle.setAttribute('title', title);
+          songTitle.setAttribute('href', trackUrl);
+          songTitle.setAttribute('target', '_blank');
+          songTitle.style.textDecoration = 'none';
+          songTitle.style.fontWeight = 'bold';
+        }
+      
+        if (artist) {
+          artistName.textContent = artist.name;
+          artistName.setAttribute('title', artist.name);
+          artistName.setAttribute('href', artist.url);
+          artistName.setAttribute('target', '_blank');
+          artistName.style.textDecoration = 'none';
+          artistName.style.fontStyle = 'italic';
+        }
+      
+        if (coverPhoto) {
+          const img = document.createElement('img');
+          img.setAttribute('src', coverPhoto);
+          img.setAttribute('id', 'cover-photo');
+          img.setAttribute('class', 'mini-spotify-right-panel mini-spotify-cover-photo');
+          img.setAttribute('title', `${title} - ${artist.name}`);
+          img.setAttribute('alt', `${title} - ${artist.name}`);
+      
+          if (document.getElementById('cover-photo')) {
+            coverImage.removeChild(document.getElementById('cover-photo'));
+          }
+      
+          coverImage.append(img);
+        }
+        console.log(title,artist);
+    }
+    private startTimer() {
+        if (!this.track) return;
+    
+        const durationMs = this.track.durationMs;
+        const progressMs = this.track.progressMs || 0;
+    
+        const timer = setTimeout(async () => {
+          await this.showPlayerUI();
+          clearTimeout(timer);
+        }, durationMs - progressMs);
+      }
+       displayControlItems(mode:playMode){
+        var playBtn=document.getElementById('play');
+        var pauseBtn=document.getElementById('pause');
+        console.log("pause/play: "+mode);
+        switch(mode){
+            case 'play':
+                playBtn.style.display='none';
+                pauseBtn.style.display='flex';
+                this.track.isPlaying=true;
+                break;
+            case 'pause':
+                playBtn.style.display='flex';
+                pauseBtn.style.display='none';
+                this.track.isPlaying=false;
+        }
+    
+    }
+    
+    public togglePlay(){
+        if(this.track.isPlaying){
+            this.displayControlItems('pause');
+        }else{
+            this.displayControlItems('play');
+        }
+    }
+    
 }
+
 
 function showUI(appMode: divType){
     const loginNotification = document.getElementById('spotify-login-notification');
@@ -46,3 +186,6 @@ function showUI(appMode: divType){
             break;
     }
 }
+
+type playMode= 'play'|'pause'|'none';
+

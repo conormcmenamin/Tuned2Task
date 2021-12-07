@@ -1,13 +1,13 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
-const browser = process.env.BROWSER;
+const browser = 'chrome';
 const BUILD_DIR_NAME = 'dist';
 const SRC_DIR_NAME = 'src';
 
 module.exports = {
   entry: {
     popup: path.join(__dirname, `../${SRC_DIR_NAME}/popup.ts`),
-    background: path.join(__dirname, `../${SRC_DIR_NAME}/background/${browser}background.ts`),
+    background: path.join(__dirname, `../${SRC_DIR_NAME}/background/${browser}/background.ts`),
   },
   output: {
     path: path.join(__dirname, `../${BUILD_DIR_NAME}`),
