@@ -14,13 +14,20 @@ export class App{
 
     public async render(){
         this.token=await getAccessToken();
-        
+        console.log(this.isLoggedIn());
         if (!this.isLoggedIn()){
             showUI('please-login-box');
+            return;
         }
+        await this.showPlayerUI();
+    
+    }
+    private async showPlayerUI(){
+        showUI('spotify-player-box');
+
     }
     private isLoggedIn(){
-        return this.token.isAnonymous;
+        return !this.token.isAnonymous;
     }
 }
 
