@@ -1,5 +1,5 @@
 /// <reference types="chrome"/>
-import { CONTEXT_MENU_ITEM, WEB_PLAYER_URL, CONTEXT_MENU_ITEM_TEXT } from '../lib/constants';
+import { CONTEXT_MENU_ITEM, WEB_PLAYER_URL, CONTEXT_MENU_ITEM_TEXT } from '../../lib/constants';
 
 
 

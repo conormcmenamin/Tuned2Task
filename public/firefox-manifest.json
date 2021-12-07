@@ -1,0 +1,30 @@
+{
+    "name": "Tuned2Task",
+    "version": "1.0",
+    "description": "Spotify Player Firefox's extension",
+    "permissions": [
+      "menus",
+      "*://*.spotify.com/"
+    ],
+    "manifest_version": 2,
+    "background": {
+      "scripts": [
+        "background.js"
+      ],
+      "persistent": true
+    },
+    "browser_action": {
+      "default_icon": {
+        "16": "images/spotify-mini-player-16.png",
+        "48": "images/spotify-mini-player-48.png",
+        "128": "images/spotify-mini-player-128.png"
+      },
+      "default_title": "Spotify Player Extension",
+      "default_popup": "popup.html"
+    },
+    "icons": {
+      "16": "images/spotify-mini-player-16.png",
+      "48": "images/spotify-mini-player-48.png",
+      "128": "images/spotify-mini-player-128.png"
+    }
+  }
