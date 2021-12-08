@@ -1,6 +1,7 @@
 import { STORAGE_KEY } from "./constants";
 import {Cache} from './cache';
-import {parse, getAccessToken, PlayerState,Token,getRecentlyPlayedTrack, getRecentPlayback, songTracker, isUpdateStorage} from "./spotify-interface";
+import {displayControlItems, playMode} from './playback';
+import {parse, getAccessToken, Device, PlayerState,Token,getRecentlyPlayedTrack, getRecentPlayback, songTracker, isUpdateStorage, getMyDevice} from "./spotify-interface";
 
 
 type divType= 'please-login-box'|'spotify-player-box';
@@ -9,6 +10,7 @@ export type RepeatMode = 'track' | 'context' | 'off';
 export class App{
     private track: songTracker;
     private token: Token;
+    private device: Device;
     
     constructor(){
         this.token=null;
@@ -17,7 +19,7 @@ export class App{
 
     public async render(){
         this.token=await getAccessToken();
-        console.log(this.isLoggedIn());
+        this.device=await getMyDevice(this.token.accessToken);
         if (!this.isLoggedIn()){
             showUI('please-login-box');
             return;
@@ -29,7 +31,6 @@ export class App{
         showUI('spotify-player-box');
         const storedTrack=Cache.retrieve(STORAGE_KEY);
         this.track= await this.getTrack(storedTrack);
-        console.log('track:' +this.track);
 
         if(isUpdateStorage(storedTrack,this.track)){
             Cache.storeWithKey(STORAGE_KEY, this.track);
@@ -95,7 +96,6 @@ export class App{
         // const divider = document.getElementById('divider');
       
         const { title, artist, coverPhoto, trackUrl } = playback;
-        console.log('song title: '+title);
       
         if (title) {
           songTitle.textContent = title;
@@ -129,7 +129,6 @@ export class App{
       
           coverImage.append(img);
         }
-        console.log(title,artist);
     }
     private startTimer() {
         if (!this.track) return;
@@ -142,21 +141,7 @@ export class App{
           clearTimeout(timer);
         }, durationMs - progressMs);
       }
-       displayControlItems(mode:playMode){
-        var playBtn=document.getElementById('play');
-        var pauseBtn=document.getElementById('pause');
-        console.log("pause/play: "+mode);
-        switch(mode){
-            case 'play':
-                playBtn.style.display='none';
-                pauseBtn.style.display='flex';
-                this.track.isPlaying=true;
-                break;
-            case 'pause':
-                playBtn.style.display='flex';
-                pauseBtn.style.display='none';
-                this.track.isPlaying=false;
-        }
+    
     
     }
     
@@ -186,6 +171,4 @@ function showUI(appMode: divType){
             break;
     }
 }
-
-type playMode= 'play'|'pause'|'none';
 

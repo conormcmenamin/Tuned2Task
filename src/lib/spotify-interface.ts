@@ -7,40 +7,59 @@ export type PlayerState = 'nothing' | 'no-song-playing' | 'cache';
 
 
 export interface Token{
-    clientId:string;
-    accessToken: string;
-    accessTokenExpirationTime: number;
-    isAnonymous: boolean;
+  clientId:string;
+  accessToken: string;
+  accessTokenExpirationTime: number;
+  isAnonymous: boolean;
+}
+export interface Device{
+  device_id:string;
 }
 
 export interface songTracker {
-    title?: string;
-    artist?: Artist;
-    repeatState?: RepeatMode;
-    isPlaying?: boolean;
-    coverPhoto?: string;
-    uri?: string;
-    progressMs?: number;
-    durationMs?: number;
-    trackUrl?: string;
-    id?: string;
-    isSave?: boolean;
-    context?: {
-      type: 'artist' | 'playlist' | 'album';
-      href: string;
-      externalUrls: {
-        spotify: string;
-      };
-      uri: string;
+  title?: string;
+  artist?: Artist;
+  repeatState?: RepeatMode;
+  isPlaying?: boolean;
+  coverPhoto?: string;
+  uri?: string;
+  progressMs?: number;
+  durationMs?: number;
+  trackUrl?: string;
+  id?: string;
+  isSave?: boolean;
+  context?: {
+    type: 'artist' | 'playlist' | 'album';
+    href: string;
+    externalUrls: {
+      spotify: string;
     };
-  }
+    uri: string;
+  };
+}
 
   export interface Artist {
     name?: string;
     url?: string;
 }
 
+export async function getMyDevice(accessToken:string){
+    const url=`${API_URL}/v1/me/player/devices`;
+    var response={};
+    try{
+      response= await fetch(url, {
+        headers:{
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
+      console.log('DEVICE ' +response);
+      const device :Device={device_id: "1234"};
+      return device;
+    }catch{
+      console.log('DEVICE '+response)
+    }
+}
 
 export async function getAccessToken(){
     let token: Token = {
@@ -66,7 +85,7 @@ export async function getRecentPlayback(accessToken:string){
             },
         });
         const data=await response.json();
-        console.log(data);
+        console.log('getRecentPlayback' +JSON.stringify(data));
         return data;
     } catch (e) {
         return false;

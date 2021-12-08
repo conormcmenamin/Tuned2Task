@@ -2,7 +2,15 @@ import { API_URL } from "./constants";
 import { Token, songTracker } from "./spotify-interface";
 
 
-export async function pause(deviceId: string, accessToken: string) {
+export type playMode= 'play'|'pause'|'none';
+
+
+
+
+export function getDeviceID(){
+  const url =`${API_URL}/`
+}
+export async function pauseTrack(deviceId: string, accessToken: string) {
     const url = `${API_URL}/v1/me/player/pause?device_id=${deviceId}`;
   
     try {
@@ -18,7 +26,7 @@ export async function pause(deviceId: string, accessToken: string) {
     }
   }
   
-  export async function play(songInfo: songTracker, deviceId: string, accessToken: string) {
+  export async function playTrack(songInfo: songTracker, deviceId: string, accessToken: string) {
     const url = `${API_URL}/v1/me/player/play?device_id=${deviceId}`;
   
     const postData = {
@@ -124,17 +132,32 @@ export function registerEvents(token: Token, playback: songTracker, render: () =
     // };
   
     async function pause() {
-      displayControlButtons('play');
+      displayControlItems('play');
       await pauseTrack(device.id, token.accessToken);
       updatesongTracker(playback, 'isPlaying', false);
       updateTrackCache({ isPlaying: false });
     }
   
     async function play() {
-      displayControlButtons('pause');
+      displayControlItems('pause');
       await playTrack(playback, device.id, token.accessToken);
       updatesongTracker(playback, 'isPlaying', true);
       updateTrackCache({ isPlaying: true });
     }
   }
   
+export async function displayControlItems(mode:playMode){
+
+    var playBtn=document.getElementById('play');
+    var pauseBtn=document.getElementById('pause');
+    switch(mode){
+        case 'play':
+            playBtn.style.display='none';
+            pauseBtn.style.display='flex';
+            break;
+        case 'pause':
+            playBtn.style.display='flex';
+            pauseBtn.style.display='none';
+            break;
+    }
+  }

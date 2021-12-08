@@ -7,7 +7,6 @@ export class Cache {
       } catch {
         result = undefined;
       }
-      console.log('stored:' + result);
       return result;
     }
   
