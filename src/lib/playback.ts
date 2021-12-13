@@ -1,5 +1,6 @@
 import { API_URL } from "./constants";
-import { Token, songTracker } from "./spotify-interface";
+import { Token, songTracker, parseDevice } from "./spotify-interface";
+
 
 
 export type playMode= 'play'|'pause'|'none';
@@ -7,14 +8,28 @@ export type playMode= 'play'|'pause'|'none';
 
 
 
-export function getDeviceID(){
-  const url =`${API_URL}/`
+export function getDeviceID(accessToken: string){
+  const url =`${API_URL}/v1/me/player/devices`;
+  var result={};
+  try{
+    result =  fetch(url, {
+      method: 'GET',
+      cache: 'no-cache',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    console.log('getdeviceresult: ' + result);
+    return parseDevice(result)[0];
+  } catch(e){
+    console.log('error at get device: ' + e);
+  }
 }
 export async function pauseTrack(deviceId: string, accessToken: string) {
     const url = `${API_URL}/v1/me/player/pause?device_id=${deviceId}`;
-  
+    var result={}
     try {
-      const result = await fetch(url, {
+        result = await fetch(url, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -24,13 +39,14 @@ export async function pauseTrack(deviceId: string, accessToken: string) {
     } catch (e) {
       throw e;
     }
+    console.log(result)
   }
   
-  export async function playTrack(songInfo: songTracker, deviceId: string, accessToken: string) {
+  export async function playTrack(playback: songTracker, deviceId: string, accessToken: string) {
     const url = `${API_URL}/v1/me/player/play?device_id=${deviceId}`;
   
     const postData = {
-      position_ms: songInfo.progressMs, // the time that current plays
+      position_ms: playback.progressMs, // the time that current plays
     };
   
     try {
@@ -47,7 +63,7 @@ export async function pauseTrack(deviceId: string, accessToken: string) {
     }
   }
 
-export function registerEvents(token: Token, playback: songTracker, render: () => Promise<void>) {
+export function registerEvents(token: Token, device_id: string, playback: songTracker, render: () => Promise<void>) {
     const btnPrev = document.getElementById('prev');
     const btnPause = document.getElementById('pause');
     const btnPlay = document.getElementById('play');
@@ -69,6 +85,7 @@ export function registerEvents(token: Token, playback: songTracker, render: () =
   
     btnPause.onclick = async function (e) {
       e.preventDefault();
+      console.log('paused');
       await pause();
     };
   
@@ -133,16 +150,16 @@ export function registerEvents(token: Token, playback: songTracker, render: () =
   
     async function pause() {
       displayControlItems('play');
-      await pauseTrack(device.id, token.accessToken);
-      updatesongTracker(playback, 'isPlaying', false);
-      updateTrackCache({ isPlaying: false });
+      await pauseTrack(device_id, token.accessToken);
+      //updatesongTracker(playback, 'isPlaying', false);
+      //updateTrackCache({ isPlaying: false });
     }
   
     async function play() {
       displayControlItems('pause');
-      await playTrack(playback, device.id, token.accessToken);
-      updatesongTracker(playback, 'isPlaying', true);
-      updateTrackCache({ isPlaying: true });
+      await playTrack(playback, device_id, token.accessToken);
+      //updatesongTracker(playback, 'isPlaying', true);
+      //updateTrackCache({ isPlaying: true });
     }
   }
   

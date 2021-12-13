@@ -1,7 +1,7 @@
 import { STORAGE_KEY } from "./constants";
 import {Cache} from './cache';
-import {displayControlItems, playMode} from './playback';
-import {parse, getAccessToken, Device, PlayerState,Token,getRecentlyPlayedTrack, getRecentPlayback, songTracker, isUpdateStorage, getMyDevice} from "./spotify-interface";
+import {displayControlItems, playMode, registerEvents,getDeviceID} from './playback';
+import {parse, getAccessToken, Device, PlayerState,Token,getRecentlyPlayedTrack, getRecentPlayback, songTracker, isUpdateStorage} from "./spotify-interface";
 
 
 type divType= 'please-login-box'|'spotify-player-box';
@@ -19,12 +19,15 @@ export class App{
 
     public async render(){
         this.token=await getAccessToken();
-        this.device=await getMyDevice(this.token.accessToken);
+        this.device=await getDeviceID(this.token.accessToken);
+        console.log(this.device);
+        console.log(this.token)
         if (!this.isLoggedIn()){
             showUI('please-login-box');
             return;
         }
         await this.showPlayerUI();
+        registerEvents(this.token,this.device.device_id, this.track,this.render.bind(this));
     
     }
     private async showPlayerUI(){
@@ -143,13 +146,13 @@ export class App{
       }
     
     
-    }
     
-    public togglePlay(){
+    
+    private togglePlay(){
         if(this.track.isPlaying){
-            this.displayControlItems('pause');
+            displayControlItems('pause');
         }else{
-            this.displayControlItems('play');
+            displayControlItems('play');
         }
     }
     

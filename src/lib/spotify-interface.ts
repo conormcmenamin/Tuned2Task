@@ -45,19 +45,19 @@ export interface songTracker {
 
 export async function getMyDevice(accessToken:string){
     const url=`${API_URL}/v1/me/player/devices`;
-    var response={};
+    
     try{
-      response= await fetch(url, {
+      const response= await fetch(url, {
         headers:{
           Authorization: `Bearer ${accessToken}`,
         },
       });
 
       console.log('DEVICE ' +response);
-      const device :Device={device_id: "1234"};
-      return device;
+      
+      return response;
     }catch{
-      console.log('DEVICE '+response)
+  
     }
 }
 
@@ -85,7 +85,6 @@ export async function getRecentPlayback(accessToken:string){
             },
         });
         const data=await response.json();
-        console.log('getRecentPlayback' +JSON.stringify(data));
         return data;
     } catch (e) {
         return false;
@@ -128,7 +127,29 @@ export function isUpdateStorage(prevTrack: songTracker, currentTrack: songTracke
       }
       return false;
 }
+export async function parseDevice(response): Promise<Device[]>{
+  if(response==null) return;
+  
+  const data = await response.json();
+  var VALID_DEVICE_TYPES=['Computer'];
+  const devices: Device[] = data.devices
+    ? data.devices
+        .filter((item) => VALID_DEVICE_TYPES.indexOf(item.type) > -1)
+        .map((item) => {
+          return {
+            id: item.id,
+            isActive: item.is_active,
+            isRestricted: item.is_restricted,
+            name: item.name,
+            type: item.type,
+            volumePercent: item.volume_percent,
+          };
+        })
+    : [];
 
+  
+  return devices;
+}
 
 export function parse(rawData): songTracker {
   if (!rawData || (rawData && !rawData.item)) return;
