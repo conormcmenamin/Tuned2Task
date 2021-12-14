@@ -19,9 +19,7 @@ export class App{
 
     public async render(){
         this.token=await getAccessToken();
-        this.device=await getDeviceID(this.token.accessToken);
-        console.log(this.device);
-        console.log(this.token)
+        this.device=await getDeviceID(this.token.accessToken)[0];
         if (!this.isLoggedIn()){
             showUI('please-login-box');
             return;

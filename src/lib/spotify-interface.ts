@@ -68,9 +68,10 @@ export async function getAccessToken(){
         accessTokenExpirationTime: null,
         isAnonymous: null,
     };
+
     try{
         const url = `${WEB_PLAYER_URL}/get_access_token`;
-        const response = await fetch(url);
+        const response = await fetch(url,);
         token = await response.json();
     } catch{}
     return token;
@@ -127,7 +128,7 @@ export function isUpdateStorage(prevTrack: songTracker, currentTrack: songTracke
       }
       return false;
 }
-export async function parseDevice(response): Promise<Device[]>{
+export async function parseDevice(response): Promise<Device>{
   if(response==null) return;
   
   const data = await response.json();
@@ -148,7 +149,7 @@ export async function parseDevice(response): Promise<Device[]>{
     : [];
 
   
-  return devices;
+  return devices[0];
 }
 
 export function parse(rawData): songTracker {

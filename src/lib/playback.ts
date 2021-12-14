@@ -8,22 +8,21 @@ export type playMode= 'play'|'pause'|'none';
 
 
 
-export function getDeviceID(accessToken: string){
+export async function getDeviceID(accessToken: string){
   const url =`${API_URL}/v1/me/player/devices`;
-  var result={};
   try{
-    result =  fetch(url, {
+    const result =  await fetch(url, {
       method: 'GET',
-      cache: 'no-cache',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`
       },
     });
-    console.log('getdeviceresult: ' + result);
-    return parseDevice(result)[0];
+    const devices= await result.json()
+    console.log(devices);
+    return devices;
   } catch(e){
-    console.log('error at get device: ' + e);
-  }
+    console.log('getdeviceiderror: ' +e);
+    }
 }
 export async function pauseTrack(deviceId: string, accessToken: string) {
     const url = `${API_URL}/v1/me/player/pause?device_id=${deviceId}`;
@@ -39,7 +38,7 @@ export async function pauseTrack(deviceId: string, accessToken: string) {
     } catch (e) {
       throw e;
     }
-    console.log(result)
+   
   }
   
   export async function playTrack(playback: songTracker, deviceId: string, accessToken: string) {
@@ -85,7 +84,6 @@ export function registerEvents(token: Token, device_id: string, playback: songTr
   
     btnPause.onclick = async function (e) {
       e.preventDefault();
-      console.log('paused');
       await pause();
     };
   
