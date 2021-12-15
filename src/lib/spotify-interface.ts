@@ -13,7 +13,13 @@ export interface Token{
   isAnonymous: boolean;
 }
 export interface Device{
-  device_id:string;
+  id:string;
+  is_active: boolean;
+  is_private_session: boolean;
+  is_restricted: false
+  name: string;
+  type: string;
+  volume_percent: number;
 }
 
 export interface songTracker {
@@ -53,7 +59,7 @@ export async function getMyDevice(accessToken:string){
         },
       });
 
-      console.log('DEVICE ' +response);
+      
       
       return response;
     }catch{
@@ -79,15 +85,17 @@ export async function getAccessToken(){
 
 export async function getRecentPlayback(accessToken:string){
     const url=`${API_URL}/v1/me/player?additional_types=track`;
+    var data;
     try {
         const response = await fetch(url, {
             headers:{
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        const data=await response.json();
+        data=await response.json();
         return data;
     } catch (e) {
+        
         return false;
     }
 

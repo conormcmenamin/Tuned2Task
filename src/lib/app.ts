@@ -19,13 +19,14 @@ export class App{
 
     public async render(){
         this.token=await getAccessToken();
-        this.device=await getDeviceID(this.token.accessToken)[0];
+        this.device=await getDeviceID(this.token.accessToken);
+        
         if (!this.isLoggedIn()){
             showUI('please-login-box');
             return;
         }
         await this.showPlayerUI();
-        registerEvents(this.token,this.device.device_id, this.track,this.render.bind(this));
+        registerEvents(this.token,this.device.id, this.track,this.render.bind(this));
     
     }
     private async showPlayerUI(){

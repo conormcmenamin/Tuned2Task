@@ -1,5 +1,5 @@
-import { API_URL } from "./constants";
-import { Token, songTracker, parseDevice } from "./spotify-interface";
+import { API_URL,TIME_OUT } from "./constants";
+import { Token, songTracker, parseDevice, getRecentPlayback, Device } from "./spotify-interface";
 
 
 
@@ -8,21 +8,30 @@ export type playMode= 'play'|'pause'|'none';
 
 
 
-export async function getDeviceID(accessToken: string){
-  const url =`${API_URL}/v1/me/player/devices`;
-  try{
-    const result =  await fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      },
-    });
-    const devices= await result.json()
-    console.log(devices);
-    return devices;
-  } catch(e){
-    console.log('getdeviceiderror: ' +e);
-    }
+export async function getDeviceID(accessToken: string): Promise<Device>{
+  const res = await getRecentPlayback(accessToken);
+
+  const {
+    id: id,
+    is_active: is_active,
+    is_private_session: is_private_session,
+    is_restricted: is_restricted,
+    name: name,
+    type: type,
+    volume_percent: volume_percent,
+  }=res.device;
+  
+  
+  return {
+    id,
+    is_active,
+    is_private_session,
+    is_restricted,
+    name,
+    type,
+    volume_percent,
+  };
+
 }
 export async function pauseTrack(deviceId: string, accessToken: string) {
     const url = `${API_URL}/v1/me/player/pause?device_id=${deviceId}`;
@@ -62,6 +71,36 @@ export async function pauseTrack(deviceId: string, accessToken: string) {
     }
   }
 
+  export async function prev(deviceId: string, accessToken: string) {
+    const url = `${API_URL}/v1/me/player/previous?device_id=${deviceId}`;
+  
+    try {
+      return await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  export async function next(deviceId: string, accessToken: string) {
+    const url = `${API_URL}/v1/me/player/next?device_id=${deviceId}`;
+  
+    try {
+      return await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch (e) {
+      throw e;
+    }
+  }
+
 export function registerEvents(token: Token, device_id: string, playback: songTracker, render: () => Promise<void>) {
     const btnPrev = document.getElementById('prev');
     const btnPause = document.getElementById('pause');
@@ -92,23 +131,23 @@ export function registerEvents(token: Token, device_id: string, playback: songTr
       await play();
     };
   
-    // btnPrev.onclick = async function (e) {
-    //   e.preventDefault();
-    //   await prevTrack(device.id, token.accessToken);
-    //   // after click next song, call API again to update UI
-    //   setTimeout(async () => {
-    //     await render();
-    //   }, TIME_OUT);
-    // };
+    btnPrev.onclick = async function (e) {
+      e.preventDefault();
+      await prev(device_id, token.accessToken);
+      // after click next song, call API again to update UI
+      setTimeout(async () => {
+        await render();
+      }, TIME_OUT);
+    };
   
-    // btnNext.onclick = async function (e) {
-    //   e.preventDefault();
-    //   await nextTrack(device.id, token.accessToken);
-    //   // after click next song, call API again to update UI
-    //   setTimeout(async () => {
-    //     await render();
-    //   }, TIME_OUT);
-    // };
+    btnNext.onclick = async function (e) {
+      e.preventDefault();
+      await next(device_id, token.accessToken);
+      // after click next song, call API again to update UI
+      setTimeout(async () => {
+        await render();
+      }, TIME_OUT);
+    };
   
     // btnSave.onclick = async function (e) {
     //   e.preventDefault();
@@ -147,14 +186,14 @@ export function registerEvents(token: Token, device_id: string, playback: songTr
     // };
   
     async function pause() {
-      displayControlItems('play');
+      displayControlItems('pause');
       await pauseTrack(device_id, token.accessToken);
       //updatesongTracker(playback, 'isPlaying', false);
       //updateTrackCache({ isPlaying: false });
     }
   
     async function play() {
-      displayControlItems('pause');
+      displayControlItems('play');
       await playTrack(playback, device_id, token.accessToken);
       //updatesongTracker(playback, 'isPlaying', true);
       //updateTrackCache({ isPlaying: true });
