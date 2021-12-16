@@ -9,7 +9,9 @@ export type playMode= 'play'|'pause'|'none';
 
 
 export async function getDeviceID(accessToken: string): Promise<Device>{
+
   const res = await getRecentPlayback(accessToken);
+  if(res.device==null)return ; 
 
   const {
     id: id,

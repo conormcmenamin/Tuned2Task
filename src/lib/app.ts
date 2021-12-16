@@ -4,7 +4,7 @@ import {displayControlItems, playMode, registerEvents,getDeviceID} from './playb
 import {parse, getAccessToken, Device, PlayerState,Token,getRecentlyPlayedTrack, getRecentPlayback, songTracker, isUpdateStorage} from "./spotify-interface";
 
 
-type divType= 'please-login-box'|'spotify-player-box';
+type divType= 'please-login-box'|'spotify-player-box'| 'please-open-spotify-box';
 export type RepeatMode = 'track' | 'context' | 'off';
 
 export class App{
@@ -19,14 +19,19 @@ export class App{
 
     public async render(){
         this.token=await getAccessToken();
-        this.device=await getDeviceID(this.token.accessToken);
         
         if (!this.isLoggedIn()){
             showUI('please-login-box');
             return;
         }
+        this.device=await getDeviceID(this.token.accessToken);
+        if(typeof this.device == 'undefined'){
+           showUI('please-open-spotify-box');
+           return;
+        }
         await this.showPlayerUI();
         registerEvents(this.token,this.device.id, this.track,this.render.bind(this));
+       
     
     }
     private async showPlayerUI(){
@@ -160,16 +165,24 @@ export class App{
 
 function showUI(appMode: divType){
     const loginNotification = document.getElementById('spotify-login-notification');
+    const openSpotifyNotification=document.getElementById('please-open-spotify-box');
     const player = document.getElementById('spotify-player');
 
     switch(appMode){
         case 'spotify-player-box':
             player.style.display='flex';
             loginNotification.style.display='none';
+            openSpotifyNotification.style.display='none';
             break;
         case 'please-login-box':
             player.style.display='none';
             loginNotification.style.display='flex';
+            openSpotifyNotification.style.display='none';
+            break;
+        case 'please-open-spotify-box':
+            loginNotification.style.display='none';
+            player.style.display='none';
+            openSpotifyNotification.style.display='flex';
             break;
     }
 }
