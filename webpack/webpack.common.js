@@ -1,13 +1,13 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
-
+const browser = 'chrome';
 const BUILD_DIR_NAME = 'dist';
 const SRC_DIR_NAME = 'src';
 
 module.exports = {
   entry: {
     popup: path.join(__dirname, `../${SRC_DIR_NAME}/popup.ts`),
-    background: path.join(__dirname, `../${SRC_DIR_NAME}/background/background.ts`),
+    background: path.join(__dirname, `../${SRC_DIR_NAME}/background/${browser}/background.ts`),
   },
   output: {
     path: path.join(__dirname, `../${BUILD_DIR_NAME}`),
@@ -36,7 +36,7 @@ module.exports = {
       patterns: [
         { from: './images', to: `../${BUILD_DIR_NAME}/images`, context: 'public' },
         { from: './popup.html', to: `../${BUILD_DIR_NAME}/popup.html`, context: 'public' },
-        { from: `manifest.json`, to: `../${BUILD_DIR_NAME}/manifest.json`, context: 'public' },
+        { from: `${browser}-manifest.json`, to: `../${BUILD_DIR_NAME}/manifest.json`, context: 'public' },
       ],
     }),
   ],
