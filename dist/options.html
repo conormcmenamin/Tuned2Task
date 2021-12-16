@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Tuned2Task Options</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <meta charset="utf-8">
+        <style>
+            .slider:hover {
+                opacity: 1; /* Fully shown on mouse-over */
+              }
+        </style>
+        
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-10 col-xl-8 mx-auto">
+                    <br>
+                    <h2 class="h3 mb-4 page-title">Tuned2Task Settings</h2>
+                    <div class="my-4">
+                        <!-- <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="playback-tab" data-toggle="tab" href="#playback" role="tab" aria-controls="playback" aria-selected="false">Playback</a>
+                            </li>
+                        </ul> -->
+                        <h5 class="mb-0 mt-5">Playback Settings</h5>
+                        <p>Customise how <strong><em>Tuned2Task</em></strong> works for you!</p>
+                        <hr class="my-4" />
+                        <strong class="mb-0">Playback</strong>
+                        <p>Control security alert you will be notified.</p>
+                        <div class="list-group mb-5 shadow">
+                            <div class="list-group-item">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <strong class="mb-0">Task Change Latency</strong>
+                                        <p class="text-muted mb-0">How long should you be on a new tab before it is considered a possible task change?</p>
+                                        <p class="text-muted mb-0"><em>Current value: <span id="current_value_time_change"></span></em></p>
+                                        <p class="text-muted mb-0"><em>(Recommended time: 60 seconds)</em></p>
+                                        
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="custom-control custom-switch">
+                                            <!-- <input type="checkbox" class="custom-control-input" id="alert1" checked="" /> -->
+                                            <input type="range" min="0" max="120" step="1" value="60" id="task_change_time" />
+                                            <span class="custom-control-label"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <strong class="mb-0">Filler Text</strong>
+                                        <p class="text-muted mb-0">Fusce lacinia elementum eros, sed vulputate urna eleifend nec.</p>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="alert2" />
+                                            <span class="custom-control-label"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4" />
+                        <strong class="mb-0">Playlists</strong>
+                        <p>Here you can customise the playlists used for each category.</p>
+                        <div class="list-group mb-5 shadow">
+                            <div class="list-group-item">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <strong class="mb-0">Filler Text</strong>
+                                        <p class="text-muted mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="alert3" checked="" />
+                                            <span class="custom-control-label"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <strong class="mb-0">Filler Text</strong>
+                                        <p class="text-muted mb-0">Nulla et tincidunt sapien. Sed eleifend volutpat elementum.</p>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="alert4" checked="" />
+                                            <span class="custom-control-label"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <strong class="mb-0">Filler Text</strong>
+                                        <p class="text-muted mb-0">Donec in quam sed urna bibendum tincidunt quis mollis mauris.</p>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="alert5" />
+                                            <span class="custom-control-label"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            </div>
+
+
+        <script src="options.js"></script>
+        <script>
+            var slider = document.getElementById("task_change_time");
+            try {
+                var output = document.getElementById("current_value_time_change");
+            }
+            catch {
+                var output = 0;
+            }
+            output.innerHTML = slider.value;
+            
+            slider.oninput = function() {
+              output.innerHTML = this.value;
+            }
+        </script>
+    </body>
+</html>
