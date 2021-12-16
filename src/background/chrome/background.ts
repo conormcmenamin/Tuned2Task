@@ -2,7 +2,7 @@
 import { CONTEXT_MENU_ITEM, WEB_PLAYER_URL, CONTEXT_MENU_ITEM_TEXT } from '../../lib/constants';
 
 
-
+getCurrentTab();
 chrome.runtime.onInstalled.addListener(function () {
   // Make extension work on all pages
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
@@ -30,3 +30,11 @@ chrome.contextMenus.onClicked.addListener(function (info) {
   }
 });
 
+async function getCurrentTab() {
+  let queryOptions = { active: true, currentWindow: true };
+  let tab =  chrome.tabs.query( queryOptions,function ([tab]:[any]){
+    console.log(tab);
+  });
+  console.log(tab);
+  return tab;
+}
