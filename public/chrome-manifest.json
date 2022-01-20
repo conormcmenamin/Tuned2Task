@@ -2,9 +2,20 @@
     "name": "Tuned2Task",
     "version": "1.0",
     "description": "Spotify Player Chrome's extension",
+    "content_scripts": [
+      {
+        "matches": ["https://*/*"],
+        "run_at": "document_start",
+        "js": ["content-script.js"]
+      }
+    ],
     "permissions": [
+      "scripting",
       "contextMenus",
-      "declarativeContent"
+      "declarativeContent",
+      "tabs",
+      "activeTab",
+      "pageCapture"
     ],
     "host_permissions": [
       "*://*.spotify.com/"

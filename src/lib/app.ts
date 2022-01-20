@@ -3,6 +3,7 @@ import {Cache} from './cache';
 import {displayControlItems, playMode, registerEvents,getDeviceID} from './playback';
 import {parse, getAccessToken, Device, PlayerState,Token,getRecentlyPlayedTrack, getRecentPlayback, songTracker, isUpdateStorage} from "./spotify-interface";
 
+import {run_script} from './prediction';
 
 type divType= 'please-login-box'|'spotify-player-box'| 'please-open-spotify-box';
 export type RepeatMode = 'track' | 'context' | 'off';
@@ -18,7 +19,9 @@ export class App{
     }
 
     public async render(){
+        
         this.token=await getAccessToken();
+
         
         if (!this.isLoggedIn()){
             showUI('please-login-box');
@@ -31,8 +34,6 @@ export class App{
         }
         await this.showPlayerUI();
         registerEvents(this.token,this.device.id, this.track,this.render.bind(this));
-       
-    
     }
     private async showPlayerUI(){
         showUI('spotify-player-box');

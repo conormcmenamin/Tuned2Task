@@ -1,6 +1,6 @@
 /// <reference types="chrome"/>
-import { CONTEXT_MENU_ITEM, WEB_PLAYER_URL, CONTEXT_MENU_ITEM_TEXT } from '../../lib/constants';
 
+import { CONTEXT_MENU_ITEM, WEB_PLAYER_URL, CONTEXT_MENU_ITEM_TEXT } from '../../lib/constants';
 
 
 chrome.runtime.onInstalled.addListener(function () {
@@ -29,4 +29,41 @@ chrome.contextMenus.onClicked.addListener(function (info) {
     });
   }
 });
+
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+  console.log(tabId);
+});
+
+chrome.tabs.onActivated.addListener(async function (activeInfo){
+  setTimeout(()=>{
+    chrome.tabs.get(activeInfo.tabId, (tab) => {
+      console.log(tab);
+      console.log("responseTab" );
+
+
+    });} , 100);
+
+      getCurrentTab();
+
+      // chrome.pageCapture.saveAsMHTML(
+      //   details: object,
+      //   callback: function,
+      // );
+
+  
+});
+
+async function getCurrentTab(){
+  var queryOptions = { active: true, currentWindow: true };
+  var res= await chrome.tabs.query(queryOptions,function(data){
+    console.log('data: ' +data.toString());
+  });
+  console.log('result: '+res);
+}
+
+// async function getCurrentTab() {
+//   let queryOptions = { active: true, currentWindow: true };
+//   let [tab] = await chrome.tabs.query(queryOptions);
+//   return tab;
+// }
 

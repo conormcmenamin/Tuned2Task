@@ -30,12 +30,21 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
+    fallback:{   
+      "child_process":false,
+      "util":false,
+      "path":false,
+      "os":false,
+      "fs":false 
+    }
   },
   plugins: [
     new CopyPlugin({
       patterns: [
+        { from: './lib/my_script.py',to: `../${BUILD_DIR_NAME}`, context:'src'},
         { from: './images', to: `../${BUILD_DIR_NAME}/images`, context: 'public' },
         { from: './popup.html', to: `../${BUILD_DIR_NAME}/popup.html`, context: 'public' },
+        { from: './content-script.js', to: `../${BUILD_DIR_NAME}/content-script.js`, context: 'public' },
         { from: `${browser}-manifest.json`, to: `../${BUILD_DIR_NAME}/manifest.json`, context: 'public' },
       ],
     }),
