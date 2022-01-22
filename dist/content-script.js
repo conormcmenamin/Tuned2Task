@@ -1,14 +1,1 @@
-function ping(){
-    chrome.runtime.onMessage.addListener(function(request, sender, callback) {
-    if(chrome.runtime.lastError) {
-        setTimeout(ping, 1000);
-      } 
-    else{
-        if (request.action == "getSource") {
-            console.log(document.getElementsByTagName('button'))
-            callback({"title": document.getElementsByTagName('html')[0]});
-        }
-    }
-   
-});
-}
+chrome.extension.onMessage.addListener((function(e,t,n){chrome.runtime.lastError?setTimeout(ping,1e3):"getSource"==e.action&&n(document.getElementsByTagName("title").innerHTML)}));

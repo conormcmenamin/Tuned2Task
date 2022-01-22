@@ -6,8 +6,7 @@ const SRC_DIR_NAME = 'src';
 
 module.exports = {
   entry: {
-    popup: path.join(__dirname, `../${SRC_DIR_NAME}/popup.ts`),
-    background: path.join(__dirname, `../${SRC_DIR_NAME}/background/${browser}/background.ts`),
+    popup: path.join(__dirname, `../${SRC_DIR_NAME}/popup.ts`)
   },
   output: {
     path: path.join(__dirname, `../${BUILD_DIR_NAME}`),
