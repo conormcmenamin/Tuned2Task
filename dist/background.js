@@ -49,9 +49,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
             // });
 
 
-            chrome.scripting.executeScript(null, { file: "tf.min.js" }, function() { //attempt to compile tensorflow min js file 
-              console.log('loaded')
-            });
+          
         });
     }
     catch (ex) {
@@ -69,6 +67,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       });} , 100);
   
         getCurrentTab();
+        getPrediction();
   
         // chrome.pageCapture.saveAsMHTML(
         //   details: object,
@@ -89,6 +88,8 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
 async function getPrediction(url){
     const model = await tf.loadLayersModel('model.json');
+    const prediction = model.predict(url);
+    return prediction;
   }
 
 

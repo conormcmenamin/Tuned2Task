@@ -1,1 +1,0 @@
-chrome.extension.onMessage.addListener((function(e,t,n){chrome.runtime.lastError?setTimeout(ping,1e3):"getSource"==e.action&&n(document.getElementsByTagName("title").innerHTML)}));

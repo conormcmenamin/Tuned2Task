@@ -2,9 +2,9 @@
     "name": "Tuned2Task",
     "version": "1.0",
     "description": "Spotify Player Chrome's extension",
-    "manifest_version": 3,
+    "manifest_version": 2,
     "background": {
-      "service_worker":  "background.js",
+      "scripts": ["tf.min.js.map","tf.min.js","background.js"],
       "type":"module"
       
     },
@@ -12,21 +12,19 @@
       {
         "matches": ["https://*/*"],
         "run_at": "document_start",
-        "js": ["content-script.js"]
+        "js": ["content-script.js"],
+        "css":["style.css"]
       }
     ],
     "permissions": [
-      "scripting",
       "contextMenus",
       "declarativeContent",
       "tabs",
       "activeTab",
       "pageCapture"
     ],
-    "host_permissions": [
-      "<all_urls>"
-    ],
-    "action": {
+    "content_security_policy": "default-src 'self'; object-src 'self'; script-src 'self' https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js 'unsafe-eval'; connect-src 'self' https://open.spotify.com  https://api.spotify.com; img-src 'self' https://i.scdn.co",
+    "browser_action": {
       "default_title": "Spotify Player Extension",
       "default_popup": "popup.html"
     }
