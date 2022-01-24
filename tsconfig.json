@@ -8,8 +8,8 @@
       "rootDir": "src",
       "outDir": "dist/js",
       "noEmitOnError": true,
-      "typeRoots": ["node_modules/@types", "node_modules/web-ext-types"],
-      "types": ["node"]
+      "typeRoots": ["node_modules/@types", "node_modules/web-ext-types","node_modules/chrome"],
+      "types": ["node", "jquery","chrome"]
     }
   }
   

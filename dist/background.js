@@ -1,1 +1,118 @@
-(()=>{"use strict";var e={991:(e,t,o)=>{const n=o(623);chrome.runtime.onInstalled.addListener((function(){chrome.declarativeContent.onPageChanged.removeRules(void 0,(function(){chrome.declarativeContent.onPageChanged.addRules([{conditions:[new chrome.declarativeContent.PageStateMatcher({})],actions:[new chrome.declarativeContent.ShowPageAction]}])})),chrome.contextMenus.create({id:n.CONTEXT_MENU_ITEM,title:n.CONTEXT_MENU_ITEM_TEXT,contexts:["selection"]})})),chrome.contextMenus.onClicked.addListener((function(e){e.menuItemId===n.CONTEXT_MENU_ITEM&&chrome.tabs.create({url:`${n.WEB_PLAYER_URL}/search/${e.selectionText}`})}))},623:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.TIME_OUT=t.HOUR_IN_SECOND=t.STORAGE_KEY=t.CONTEXT_MENU_ITEM_TEXT=t.CONTEXT_MENU_ITEM=t.API_URL=t.WEB_PLAYER_URL=void 0,t.WEB_PLAYER_URL="https://open.spotify.com",t.API_URL="https://api.spotify.com",t.CONTEXT_MENU_ITEM="spotify-extension-search-on-spotify",t.CONTEXT_MENU_ITEM_TEXT='Search Spotify for "%s"',t.STORAGE_KEY="storage",t.HOUR_IN_SECOND=3600,t.TIME_OUT=1e3}},t={};!function o(n){if(t[n])return t[n].exports;var r=t[n]={exports:{}};return e[n](r,r.exports,o),r.exports}(991)})();
+
+//import * as tf from './tf.min.js';
+const CONTEXT_MENU_ITEM = 'spotify-extension-search-on-spotify';
+const CONTEXT_MENU_ITEM_TEXT = 'Search Spotify for "%s"';
+const WEB_PLAYER_URL = 'https://open.spotify.com';
+
+
+chrome.runtime.onInstalled.addListener(function () {
+  // Make extension work on all pages
+  chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
+    chrome.declarativeContent.onPageChanged.addRules([
+      {
+        conditions: [new chrome.declarativeContent.PageStateMatcher({})],
+        actions: [new chrome.declarativeContent.ShowPageAction()],
+      },
+    ]);
+  });
+
+  // Create right click menu
+  chrome.contextMenus.create({
+    id: CONTEXT_MENU_ITEM,
+    title: CONTEXT_MENU_ITEM_TEXT,
+    contexts: ['selection'],
+  });
+});
+
+chrome.contextMenus.onClicked.addListener(function (info) {
+  if (info.menuItemId === CONTEXT_MENU_ITEM) {
+    chrome.tabs.create({
+      url: `${WEB_PLAYER_URL}/search/${info.selectionText}`,
+    });
+  }
+});
+
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) { 
+  console.log(tabId);
+});
+
+
+
+
+
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+
+    try {
+        chrome.tabs.query({active:true}, function (tab) {
+            // chrome.runtime.sendMessage(tab.id, {action: "getSource"}, function(source) { //inject content script js file to web scrape HTML from web page
+            //     console.log("HTML "+source);
+            // });
+
+
+          
+        });
+    }
+    catch (ex) {
+        console.log(ex);
+    }
+  });
+  
+  chrome.tabs.onActivated.addListener(async function (activeInfo){ //when active tab changes fire this method with the tabs info in activeInfo argument
+    setTimeout(()=>{
+      chrome.tabs.get(activeInfo.tabId, (tab) => { //TODO: CHANGE MUSIC TYPE HERE
+        console.log(tab);
+        console.log("responseTab" );
+        
+  
+      });} , 100);
+  
+        getCurrentTab();
+        getPrediction();
+  
+        // chrome.pageCapture.saveAsMHTML(
+        //   details: object,
+        //   callback: function,
+        // );
+  
+    
+  });
+  
+  async function getCurrentTab(){
+    var queryOptions = { active: true, currentWindow: true };
+    var res= await chrome.tabs.query(queryOptions,function(data){
+      console.log('data: ' +data.toString());
+    });
+    console.log('result: '+res);
+  }
+  
+
+async function getPrediction(url){
+    const model = await tf.loadLayersModel('model.json');
+    const prediction = model.predict(url);
+    return prediction;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

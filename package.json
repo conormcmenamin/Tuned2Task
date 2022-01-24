@@ -30,6 +30,8 @@
     "@babel/preset-typescript": "7.12.7",
     "@types/chrome": "0.0.129",
     "@types/jest": "26.0.20",
+    "@types/jquery": "^3.5.11",
+    "@types/node": "^17.0.8",
     "@types/sinon": "9.0.10",
     "babel-jest": "26.6.3",
     "copy-webpack-plugin": "7.0.0",
@@ -50,6 +52,20 @@
     "whatwg-fetch": "3.0.0"
   },
   "dependencies": {
-    "colorthief": "2.3.2"
+    "child_process": "^1.0.2",
+    "chrome": "^0.1.0",
+    "colorthief": "2.3.2",
+    "fs": "0.0.1-security",
+    "jquery": "^3.6.0",
+    "polyfill": "^0.1.0",
+    "python-shell": "^3.0.1",
+    "rapydscript": "^0.5.62",
+    "stream": "0.0.2",
+    "tensorflow": "^0.7.0",
+    "tsd": "^0.19.1",
+    "util.promisify": "^1.1.1"
+  },
+  "browser": {
+    "child_process": false
   }
 }

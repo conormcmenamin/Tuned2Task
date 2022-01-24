@@ -1,6 +1,6 @@
 import { API_URL,TIME_OUT } from "./constants";
 import { Token, songTracker, parseDevice, getRecentPlayback, Device } from "./spotify-interface";
-
+import {run_script} from './prediction';
 
 
 export type playMode= 'play'|'pause'|'none';
@@ -131,6 +131,7 @@ export function registerEvents(token: Token, device_id: string, playback: songTr
     btnPlay.onclick = async function (e) {
       e.preventDefault();
       await play();
+      
     };
   
     btnPrev.onclick = async function (e) {
